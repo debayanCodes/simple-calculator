@@ -4,31 +4,26 @@ import './Calculator.css';
 
 const Calculator = () => {
   const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
 
   const handleButtonClick = useCallback((value) => {
     if (value === '=') {
       try {
         const evaluated = evaluate(input);
-        setResult(evaluated.toString());
-        setInput(evaluated.toString()); // Set input to result for continued operations
+        setInput(evaluated.toString()); // Set input to the evaluated result
       } catch (e) {
-        setResult('Error');
+        setInput('Error'); // Display error in the input field
       }
     } else if (value === 'C') {
-      setInput('');
-      setResult('');
+      setInput(''); // Clear the input field
     } else if (value === '√') {
       try {
         const sqrtValue = Math.sqrt(parseFloat(input));
-        setResult(sqrtValue.toString());
-        setInput(sqrtValue.toString()); // Set input to result for continued operations
+        setInput(sqrtValue.toString()); // Set input to the square root value
       } catch (e) {
-        setResult('Error');
+        setInput('Error'); // Display error in the input field
       }
     } else {
-      setInput(input + value);
-      setResult(''); // Clear result when adding new input
+      setInput((prevInput) => prevInput + value); // Append the button value to the input
     }
   }, [input]);
 
@@ -40,9 +35,9 @@ const Calculator = () => {
       } else if (key === 'Enter') {
         handleButtonClick('=');
       } else if (key === 'Backspace') {
-        setInput(input.slice(0, -1));
+        setInput(input.slice(0, -1)); // Remove the last character from the input
       } else if (key === 'Escape') {
-        handleButtonClick('C');
+        handleButtonClick('C'); // Clear the input field
       }
     };
 
@@ -50,7 +45,7 @@ const Calculator = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [input, handleButtonClick]); // Add handleButtonClick here
+  }, [input, handleButtonClick]);
 
   return (
     <div className="calculator">
@@ -61,7 +56,6 @@ const Calculator = () => {
           onChange={() => {}} // Prevent React warning about uncontrolled input
           onFocus={(e) => e.target.select()} // Select input on focus
         />
-        <div className="result">{result}</div>
       </div>
       <div className="buttons">
         <button onClick={() => handleButtonClick('7')}>7</button>
@@ -81,6 +75,8 @@ const Calculator = () => {
         <button className="equal" onClick={() => handleButtonClick('=')}>=</button>
         <button className="operator" onClick={() => handleButtonClick('+')}>+</button>
         <button className="clear" onClick={() => handleButtonClick('C')}>C</button>
+        <button className="operator" onClick={() => handleButtonClick('(')}>(</button>
+        <button className="operator" onClick={() => handleButtonClick(')')}>)</button>
         <button className="operator" onClick={() => handleButtonClick('√')}>√</button>
       </div>
     </div>

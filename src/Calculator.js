@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { evaluate } from 'mathjs'; // Import evaluate from mathjs
+import React, { useState, useEffect, useCallback } from 'react';
+import { evaluate } from 'mathjs';
 import './Calculator.css';
 
 const Calculator = () => {
   const [input, setInput] = useState('');
+  const [result, setResult] = useState('');
 
-  const handleButtonClick = (value) => {
+  const handleButtonClick = useCallback((value) => {
     if (value === '=') {
       try {
         const evaluated = evaluate(input);
-        // Display the evaluated result in the input
-        setInput(evaluated.toString());
+        setResult(evaluated.toString());
+        setInput(evaluated.toString()); // Set input to result for continued operations
       } catch (e) {
-        setInput('Error');
+        setResult('Error');
       }
     } else if (value === 'C') {
       setInput('');
+      setResult('');
     } else if (value === '√') {
       try {
         const sqrtValue = Math.sqrt(parseFloat(input));
-        // Display the square root result in the input
-        setInput(sqrtValue.toString());
+        setResult(sqrtValue.toString());
+        setInput(sqrtValue.toString()); // Set input to result for continued operations
       } catch (e) {
-        setInput('Error');
+        setResult('Error');
       }
     } else {
-      // Append the value to the input
       setInput(input + value);
+      setResult(''); // Clear result when adding new input
     }
-  };
+  }, [input]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -56,9 +58,10 @@ const Calculator = () => {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)} // Properly manage input
+          onChange={() => {}} // Prevent React warning about uncontrolled input
           onFocus={(e) => e.target.select()} // Select input on focus
         />
+        <div className="result">{result}</div>
       </div>
       <div className="buttons">
         <button onClick={() => handleButtonClick('7')}>7</button>
@@ -78,8 +81,6 @@ const Calculator = () => {
         <button className="equal" onClick={() => handleButtonClick('=')}>=</button>
         <button className="operator" onClick={() => handleButtonClick('+')}>+</button>
         <button className="clear" onClick={() => handleButtonClick('C')}>C</button>
-        <button className="operator" onClick={() => handleButtonClick('(')}>(</button>
-        <button className="operator" onClick={() => handleButtonClick(')')}>)</button>
         <button className="operator" onClick={() => handleButtonClick('√')}>√</button>
       </div>
     </div>

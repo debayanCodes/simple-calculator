@@ -48,7 +48,7 @@ const Calculator = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [input]);
+  }, [input, handleButtonClick]); // Add handleButtonClick here
 
   return (
     <div className="calculator">
